@@ -17,7 +17,7 @@ public class CommentsDataSource {
     private SQLiteDatabase database;
     private MySQLiteHelper dbHelper;
     private String[] allColumns = { MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_COMMENT };
+            MySQLiteHelper.COLUMN_COMMENT, MySQLiteHelper.COLUMN_RATING };
 //Creates a new instance of the MYSQLHelper class and sets it as a variable
     public CommentsDataSource(Context context) {
         dbHelper = new MySQLiteHelper(context);
@@ -37,12 +37,18 @@ public class CommentsDataSource {
         long insertId = database.insert(MySQLiteHelper.TABLE_COMMENTS, null,
                 values);
         Cursor cursor = database.query(MySQLiteHelper.TABLE_COMMENTS,
-                allColumns, MySQLiteHelper.COLUMN_ID + " = " + insertId, null,
+                null, MySQLiteHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
         Comment newComment = cursorToComment(cursor);
         cursor.close();
         return newComment;
+    }
+    public void addRating(Integer rating, Integer commentID) {
+        ContentValues values = new ContentValues();
+        values.put(MySQLiteHelper.COLUMN_RATING, rating);
+        database.update(MySQLiteHelper.TABLE_COMMENTS, values, MySQLiteHelper.COLUMN_ID + "=" + commentID, null);
+
     }
 //Deletes the provided comment from the database
     public void deleteComment(Comment comment) {
@@ -74,6 +80,7 @@ public class CommentsDataSource {
         //comment.setId(cursor.getLong(0));
         comment.setId(cursor.getLong(cursor.getColumnIndex(MySQLiteHelper.COLUMN_ID)));
         comment.setComment(cursor.getString(1));
+        comment.setRating(cursor.getString( cursor.getColumnIndex( MySQLiteHelper.COLUMN_RATING )));
         return comment;
     }
 }

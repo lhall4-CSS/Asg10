@@ -1,15 +1,16 @@
 package com.ljedesign.landonhall.participation10;
 
-import java.util.List;
+        import java.util.List;
         import java.util.Random;
-
         import android.app.ListActivity;
         import android.os.Bundle;
         import android.view.View;
         import android.widget.ArrayAdapter;
 
+
 public class MainActivity extends ListActivity {
     private CommentsDataSource datasource;
+    private ArrayAdapter<Comment> commentAdapter;
 
     @Override
     //onCreate opens a new database connection and grabs all of the comments then shows them using an ArrayAdapter
@@ -24,8 +25,8 @@ public class MainActivity extends ListActivity {
 
         // use the SimpleCursorAdapter to show the
         // elements in a ListView
-        ArrayAdapter<Comment> adapter = new ArrayAdapter<Comment>(this,
-                android.R.layout.simple_list_item_1, values);
+        ArrayAdapter<Comment> adapter = new CommentArrayAdapter(this, 0, datasource.getAllComments());
+        commentAdapter = adapter;
         setListAdapter(adapter);
     }
 
@@ -67,5 +68,6 @@ public class MainActivity extends ListActivity {
         datasource.close();
         super.onPause();
     }
+
 
 }
